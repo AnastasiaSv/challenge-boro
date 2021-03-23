@@ -1,7 +1,4 @@
-// import './module';
 import '../scss/index.scss';
-
-// console.log('working');
 
 const postsContainer = document.querySelector('.posts-container'),
       listContainer = document.querySelector('.list-container'),
@@ -40,14 +37,6 @@ sortListener(categorySort, 'sortByCategory');
 sortListener(dateSort, 'sortByDate');
 sortListener(sizeSort, 'sortBySize');
 
-
-// Reset deleting and sorting cards
-resetButton.addEventListener('click', () => {
-    sortState = resetObjectValues(sortState);
-    removeClassFromElements(sortLabels, 'active');
-    displayCards('full');
-});
-
 // Get data
 async function getPosts() {
     const res = await fetch(`${url}catalog.json`);
@@ -55,24 +44,28 @@ async function getPosts() {
     return data;
 }
 
-// Group data by property
-function groupByProp(data) {
-    return data.reduce((r, a) => {
-        r[a.category] = r[a.category] || [];
-        r[a.category].push(a);
-        return r;
-    }, []);
-}
+// Add listeners to the view switches
+viewButtons.forEach(item => {
+    item.addEventListener('click', event => {
+        let view = event.target.value;
 
-// Create image
-function createImage(src, className) {
-    let image = document.createElement('img');
-    image.classList.add(className);
-    image.setAttribute('alt', '');
-    image.setAttribute('src', src);
-
-    return image;
-} 
+        if (view == 'cards') {
+            setDisplay(listContainer, 'none');
+            setDisplay(sortContainer, 'flex');
+            setDisplay(postsContainer, 'flex');
+            setDisplay(footer, 'flex');
+            addClass(viewCardsLabel, 'active');
+            removeClass(viewListLabel, 'active');
+        } else {
+            setDisplay(listContainer, 'flex');
+            setDisplay(sortContainer, 'none');
+            setDisplay(postsContainer, 'none');
+            setDisplay(footer, 'none');
+            addClass(viewListLabel, 'active');
+            removeClass(viewCardsLabel, 'active');
+        }
+    });
+});
 
 // Display data as cards
 async function displayCards(status = '') {
@@ -102,49 +95,7 @@ async function displayCards(status = '') {
     createGrid(posts, currentPosts, pages);
 }
 
-// Display type switch
-viewButtons.forEach(item => {
-    item.addEventListener('click', event => {
-        let view = event.target.value;
-
-        if (view == 'cards') {
-            setDisplay(listContainer, 'none');
-            setDisplay(sortContainer, 'flex');
-            setDisplay(postsContainer, 'flex');
-            setDisplay(footer, 'flex');
-            addClass(viewCardsLabel, 'active');
-            removeClass(viewListLabel, 'active');
-        } else {
-            setDisplay(listContainer, 'flex');
-            setDisplay(sortContainer, 'none');
-            setDisplay(postsContainer, 'none');
-            setDisplay(footer, 'none');
-            addClass(viewListLabel, 'active');
-            removeClass(viewCardsLabel, 'active');
-        }
-    });
-});
-
-// Set display property
-function setDisplay(element, prop) {
-    element.style.display = prop;
-}
-
-// Sorting listeners
-function sortListener(elements, prop) {
-    elements.forEach(item => {
-        item.addEventListener('click', event => {
-            let order = event.target.value;
-            removeClassFromElements(sortLabels, 'active');
-            document.querySelector(`label[for="${event.target.id}"]`).classList.add('active');
-            sortState = resetObjectValues(sortState);
-            sortState[prop] = order;
-            displayCards();
-        });
-    });
-}
-
-// Show cards
+// Create a grid of cards
 function createGrid(posts, currentPosts, pages) {
     postsContainer.innerHTML = '';
     loader.style.display = 'block';
@@ -188,6 +139,82 @@ function createGrid(posts, currentPosts, pages) {
     }
 
     loader.style.display = 'none';
+}
+
+
+// Display data as list
+async function displayList() {
+    let posts = await getPosts();
+    let listArray = groupByProp(posts);
+    let parentList = document.createElement('ul');
+
+    for(var key in listArray) {
+        let parentLi = createTextElement('li', key, 'show');
+        let childList = document.createElement('ul');
+
+        listArray[key].forEach(item => {
+            let li = document.createElement('li');
+            li.innerHTML = `<div class="list__image"><img src="${url}${item.image}" alt="" /></div>`;
+            childList.append(li);
+
+            li.addEventListener('click', function () {
+                let image = createImage(`${url}${item.image}`, 'modal__image');
+                modalContainer.innerHTML = '';
+                modalContainer.append(image);
+                const thumbs = listContainer.querySelectorAll('li');
+                removeClassFromElements(thumbs, 'full-size');
+                this.classList.toggle('full-size');
+            });
+        });
+
+        parentLi.append(childList);
+
+        parentLi.addEventListener('click', event => {
+            event.stopPropagation();
+            toggleThumbs(event);
+        });
+        
+        parentList.append(parentLi);
+    }
+
+    listItemRoot.append(parentList);
+    listItemRoot.addEventListener('click', event => {
+        event.stopPropagation();
+        toggleThumbs(event);
+    });
+}
+
+// Toggle thumbs by click
+function toggleThumbs(event) {
+    let childrenList = event.target.querySelector('ul');
+
+    if (!childrenList) return;
+    childrenList.hidden = !childrenList.hidden;
+
+    if (childrenList.hidden) {
+        modalContainer.innerHTML = '';
+        const thumbs = listContainer.querySelectorAll('li');
+        removeClassFromElements(thumbs, 'full-size');
+        event.target.classList.add('hide');
+        event.target.classList.remove('show');
+    } else {
+        event.target.classList.add('show');
+        event.target.classList.remove('hide');
+    }
+}
+
+// Sorting listeners
+function sortListener(elements, prop) {
+    elements.forEach(item => {
+        item.addEventListener('click', event => {
+            let order = event.target.value;
+            removeClassFromElements(sortLabels, 'active');
+            document.querySelector(`label[for="${event.target.id}"]`).classList.add('active');
+            sortState = resetObjectValues(sortState);
+            sortState[prop] = order;
+            displayCards();
+        });
+    });
 }
 
 // Calculate pagination data
@@ -257,6 +284,20 @@ function createPaginationButton(value, text) {
     });
 }
 
+// Reset deleting and sorting cards
+resetButton.addEventListener('click', () => {
+    sortState = resetObjectValues(sortState);
+    removeClassFromElements(sortLabels, 'active');
+    displayCards('full');
+});
+
+// Helpers
+
+// Set display property
+function setDisplay(element, prop) {
+    element.style.display = prop;
+}
+
 function createTextElement(name, text, className) {
     const li = document.createElement(name);
     li.textContent = text;
@@ -265,66 +306,24 @@ function createTextElement(name, text, className) {
     return li;
 }
 
-// Display data as list
-async function displayList() {
-    let posts = await getPosts();
-    let listArray = groupByProp(posts);
-    let parentList = document.createElement('ul');
-
-    for(var key in listArray) {
-        let parentLi = createTextElement('li', key, 'show');
-        let childList = document.createElement('ul');
-
-        listArray[key].forEach(item => {
-            let li = document.createElement('li');
-            li.innerHTML = `<div class="list__image"><img src="${url}${item.image}" alt="" /></div>`;
-            childList.append(li);
-
-            li.addEventListener('click', function () {
-                let image = createImage(`${url}${item.image}`, 'modal__image');
-                modalContainer.innerHTML = '';
-                modalContainer.append(image);
-                const thumbs = listContainer.querySelectorAll('li');
-                removeClassFromElements(thumbs, 'full-size');
-                this.classList.toggle('full-size');
-            });
-        });
-
-        parentLi.append(childList);
-
-        parentLi.addEventListener('click', event => {
-            event.stopPropagation();
-            toggleThumbs(event);
-        });
-        
-        parentList.append(parentLi);
-    }
-
-    listItemRoot.append(parentList);
-    listItemRoot.addEventListener('click', event => {
-        event.stopPropagation();
-        toggleThumbs(event);
-    });
+// Group data by property
+function groupByProp(data) {
+    return data.reduce((r, a) => {
+        r[a.category] = r[a.category] || [];
+        r[a.category].push(a);
+        return r;
+    }, []);
 }
 
-// Toggle thumbs by click
-function toggleThumbs(event) {
-    let childrenList = event.target.querySelector('ul');
+// Create image
+function createImage(src, className) {
+    let image = document.createElement('img');
+    image.classList.add(className);
+    image.setAttribute('alt', '');
+    image.setAttribute('src', src);
 
-    if (!childrenList) return;
-    childrenList.hidden = !childrenList.hidden;
-
-    if (childrenList.hidden) {
-        modalContainer.innerHTML = '';
-        const thumbs = listContainer.querySelectorAll('li');
-        removeClassFromElements(thumbs, 'full-size');
-        event.target.classList.add('hide');
-        event.target.classList.remove('show');
-    } else {
-        event.target.classList.add('show');
-        event.target.classList.remove('hide');
-    }
-}
+    return image;
+} 
 
 // Set all object values to null
 function resetObjectValues(obj) {
