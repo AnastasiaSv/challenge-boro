@@ -1,7 +1,4 @@
-// import './module';
 import '../scss/index.scss';
-
-// console.log('working');
 
 const postsContainer = document.querySelector('.posts-container'),
       listContainer = document.querySelector('.list-container'),
@@ -86,14 +83,14 @@ async function displayCards(status = '') {
         posts = JSON.parse(localStorage.getItem('posts'));
     }
 
-    if (sortState.sortByTitle == 'asc') sortAsc(posts, 'image');
-    if (sortState.sortByTitle == 'desc') sortDesc(posts, 'image');
-    if (sortState.sortByCategory == 'asc') sortAsc(posts, 'category');
-    if (sortState.sortByCategory == 'desc') sortDesc(posts, 'category');
-    if (sortState.sortByDate == 'asc') sortAsc(posts, 'timestamp');
-    if (sortState.sortByDate == 'desc') sortDesc(posts, 'timestamp');
-    if (sortState.sortBySize == 'asc') sortAsc(posts, 'filesize');
-    if (sortState.sortBySize == 'desc') sortDesc(posts, 'filesize');
+    if (sortState.sortByTitle == 'asc')         sortAsc(posts, 'image');
+    if (sortState.sortByTitle == 'desc')        sortDesc(posts, 'image');
+    if (sortState.sortByCategory == 'asc')      sortAsc(posts, 'category');
+    if (sortState.sortByCategory == 'desc')     sortDesc(posts, 'category');
+    if (sortState.sortByDate == 'asc')          sortAsc(posts, 'timestamp');
+    if (sortState.sortByDate == 'desc')         sortDesc(posts, 'timestamp');
+    if (sortState.sortBySize == 'asc')          sortAsc(posts, 'filesize');
+    if (sortState.sortBySize == 'desc')         sortDesc(posts, 'filesize');
 
     let data = pagination(posts, currentPage, rows);
     let currentPosts = data.currentPosts;
