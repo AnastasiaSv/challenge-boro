@@ -32,6 +32,7 @@
     "bb >= 10"
   ],
   "devDependencies": {
+    "@babel/polyfill": "^7.12.1",
     "@babel/core": "^7.13.1",
     "@babel/preset-env": "^7.13.5",
     "babel-eslint": "^10.1.0",
@@ -52,7 +53,6 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.12.1",
     "bootstrap": "^4.6.0"
   }
 }
