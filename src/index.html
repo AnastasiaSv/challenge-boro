@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar fixed-top navbar-light bg-light">
+            <div class="container">
+
+                <a class="navbar-brand" href="#">Challenge Boro</a>
+
+                <div class="view">
+                    <span class="view__title strong">View</span>
+                    <div class="view__inputs">
+                        <input type="radio" id="view__cards" name="view" value="cards">
+                        <label for="view__cards" class="view__cards-label strong active">Cards</label>
+                        <input type="radio" id="view__list" name="view" value="list">
+                        <label for="view__list" class="view__list-label strong">List</label>
+                    </div>
+                </div>
+
+                <div class="sort">
+                    <div class="sort__wrapper sort-title">
+                        <span class="sort__title strong">Name</span>
+                        <div class="sort__inputs">
+                            <input type="radio" id="sort-title-asc" name="title" value="asc">
+                            <label for="sort-title-asc"><i class="fas fa-arrow-up"></i></label>
+                            <input type="radio" id="sort-title-desc" name="title" value="desc">
+                            <label for="sort-title-desc"><i class="fas fa-arrow-down"></i></label>
+                        </div>
+                    </div>
+
+                    <div class="sort__wrapper sort-category">
+                        <span class="sort__title strong">Category</span>
+                        <div class="sort__inputs">
+                            <input type="radio" id="sort-category-asc" name="category" value="asc">
+                            <label for="sort-category-asc"><i class="fas fa-arrow-up"></i></label>
+                            <input type="radio" id="sort-category-desc" name="category" value="desc">
+                            <label for="sort-category-desc"><i class="fas fa-arrow-down"></i></label>
+                        </div>
+                    </div>
+
+                    <div class="sort__wrapper sort-date">
+                        <span class="sort__title strong">Date</span>
+                        <div class="sort__inputs">
+                            <input type="radio" id="sort-date-asc" name="date" value="asc">
+                            <label for="sort-date-asc"><i class="fas fa-arrow-up"></i></label>
+                            <input type="radio" id="sort-date-desc" name="date" value="desc">
+                            <label for="sort-date-desc"><i class="fas fa-arrow-down"></i></label>
+                        </div>
+                    </div>
+
+                    <div class="sort__wrapper sort-size">
+                        <span class="sort__title strong">Size</span>
+                        <div class="sort__inputs">
+                            <input type="radio" id="sort-size-asc" name="size" value="asc">
+                            <label for="sort-size-asc"><i class="fas fa-arrow-up"></i></label>
+                            <input type="radio" id="sort-size-desc" name="size" value="desc">
+                            <label for="sort-size-desc"><i class="fas fa-arrow-down"></i></label>
+                        </div>
+                    </div>
+                </div>
+                
+
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            
+            <div class="row posts-container"></div>
+
+            <div class="list-container">
+                <ul class="list" id="list">
+                    <li class="list__item list__item-root show">categories</li>
+                </ul> 
+                <div class="modal-container"></div>
+            </div>
+
+        </div>
+
+        <div class="loader lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+
+    </main>
+
+    <footer class="footer">
+        <nav class="navbar fixed-bottom navbar-light bg-light">
+            <div class="container">
+
+                <ul id="pagination" class="pagination pagination-sm"></ul>
+
+                <button class="reset btn btn-sm btn-outline-secondary my-2 my-sm-0" type="submit">Reset</button>
+
+            </div>
+        </nav>
+    </footer>
+</body>
+</html>
